@@ -1,6 +1,8 @@
 package com.example.krishnadamarla.sunshine;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,10 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.example.krishnadamarla.sunshine.backgroundtasks.FetchForecast;
+import com.example.krishnadamarla.sunshine.helpers.WeatherJsonParser;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -45,17 +51,6 @@ import java.util.ArrayList;
         {
             FetchForecast fetchForecastTask = new FetchForecast();
             fetchForecastTask.execute(GetWeatherMapAPI("32092"));
-            String[] forecastArray = null;
-            try
-            {
-                forecastArray = fetchForecastTask.get();
-                arrayAdapter = new ArrayAdapter(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview,forecastArray);
-
-            }
-            catch (Exception e)
-            {
-                Log.e("ForecastFragment","exception getting results from FetchForecast async task", e);
-            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -65,23 +60,20 @@ import java.util.ArrayList;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        FetchForecast fetchForecastTask = new FetchForecast();
-        fetchForecastTask.execute(GetWeatherMapAPI("60563"));
-        String[] forecastArray = null;
-        try
-        {
-           forecastArray = fetchForecastTask.get();
-
-        }
-        catch (Exception e)
-        {
-            Log.e("ForecastFragment","exception getting results from FetchForecast async task", e);
-        }
-
-        arrayAdapter = new ArrayAdapter(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview,forecastArray);
+        arrayAdapter = new ArrayAdapter(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview);
+        new FetchForecast().execute(GetWeatherMapAPI("60563"));
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastListView.setAdapter(arrayAdapter);
+        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String currentItemForecast = (String) arrayAdapter.getItem(position);
+                //Toast.makeText(getActivity(), currentItemForecast, Toast.LENGTH_LONG).show();
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
+                detailIntent.putExtra(Intent.EXTRA_TEXT, currentItemForecast);
+                startActivity(detailIntent);
+            }
+        });
         return rootView;
     }
 
@@ -99,6 +91,35 @@ import java.util.ArrayList;
         builder.appendQueryParameter("units", "metric");
         builder.appendQueryParameter("cnt","7");
         return builder.build().toString();
+    }
+
+    public class FetchForecast extends AsyncTask<String, Void, String[]>
+    {
+        @Override
+        protected String[] doInBackground(String... params) {
+            String weatherJson = WeatherAPIClient.GetForecastForAWeek(params[0]);
+            try
+            {
+                return WeatherJsonParser.getWeatherDataFromJson(weatherJson, 7);
+            }
+            catch(JSONException je)
+            { Log.e("JSON Exception","exception while converting results to json", je);}
+            return  null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            try{
+                if (strings == null) return;
+                arrayAdapter.clear();
+                arrayAdapter.addAll(strings);
+            }
+            catch (Exception e)
+            {
+                Log.e("OnPostExecute","binding results", e);
+            }
+
+        }
     }
  }
 
