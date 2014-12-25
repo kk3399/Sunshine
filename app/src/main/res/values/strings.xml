@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sunshine</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="week_forecast_endpoint"><![CDATA[http://api.openweathermap.org/data/2.5/forecast/daily?q=60563&mode=json&units=metric&cnt=7]]></string>
+
+</resources>
