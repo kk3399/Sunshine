@@ -2,7 +2,10 @@ package com.example.krishnadamarla.sunshine;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ShareActionProvider;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +50,24 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
             return true;
+        }
+        else if(id == R.id.action_map_location)
+        {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            String zipCode = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.pref_general_location_key), getString(R.string.pref_general_location_default));
+            Uri geoLocation =  Uri.parse("geo:0,0?q=" + zipCode);
+            intent.setData(geoLocation);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 }

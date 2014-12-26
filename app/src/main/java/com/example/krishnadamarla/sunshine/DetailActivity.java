@@ -7,15 +7,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.Adapter;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 
 public class DetailActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class DetailActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -56,7 +61,9 @@ public class DetailActivity extends Activity {
      */
     public static class DetailFragment extends Fragment {
 
+        private ShareActionProvider mShareActionProvider;
         public DetailFragment() {
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -70,6 +77,26 @@ public class DetailActivity extends Activity {
                 ((TextView)rootView.findViewById(R.id.detail_text)).setText(forecast);
             }
             return rootView;
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            super.onCreateOptionsMenu(menu, inflater);
+            //inflater.inflate(R.menu.menu_detail, menu);
+            // Locate MenuItem with ShareActionProvider
+            MenuItem item = menu.findItem(R.id.action_share);
+            // Fetch and store ShareActionProvider
+            mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+            mShareActionProvider.setShareIntent(getSharableIntent());
+        }
+
+        private Intent getSharableIntent() {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            String forecast = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, forecast + "#sunshine");
+            return intent;
         }
     }
 }

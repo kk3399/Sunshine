@@ -3,4 +3,10 @@
     tools:context="com.example.krishnadamarla.sunshine.DetailActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item
+        android:id="@+id/action_share"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_share"
+        android:actionProviderClass=
+            "android.widget.ShareActionProvider" />
 </menu>

@@ -1,5 +1,9 @@
 package com.example.krishnadamarla.sunshine.helpers;
 
+import android.content.res.Resources;
+
+import com.example.krishnadamarla.sunshine.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +33,15 @@ public final class WeatherJsonParser {
     /**
      * Prepare the weather high/lows for presentation.
      */
-    public static String formatHighLows(double high, double low) {
+    public static String formatHighLows(double high, double low, String tempUnits, String defaultTempUnits) {
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
+        if (tempUnits != null && !tempUnits.isEmpty() && !tempUnits.equals(defaultTempUnits))
+        {
+            roundedHigh = (9 * roundedHigh)/5 + 32;
+            roundedLow = (9 * roundedLow)/5 + 32;
+        }
 
         String highLowStr = roundedHigh + "/" + roundedLow;
         return highLowStr;
@@ -45,7 +54,7 @@ public final class WeatherJsonParser {
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    public static String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+    public static String[] getWeatherDataFromJson(String forecastJsonStr, int numDays, String tempUnits, String defaultTempUnits)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -86,7 +95,7 @@ public final class WeatherJsonParser {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
-            highAndLow = formatHighLows(high, low);
+            highAndLow = formatHighLows(high, low, tempUnits, defaultTempUnits);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
