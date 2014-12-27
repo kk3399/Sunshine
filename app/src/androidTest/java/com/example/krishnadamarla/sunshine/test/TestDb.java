@@ -50,7 +50,7 @@ public class TestDb extends AndroidTestCase {
         WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues values = getLocationValues();
+        ContentValues values = createNorthPoleLocationValues();
 
         long locationRowId;
         locationRowId = db.insert(LocationEntry.TABLE_NAME, null, values);
@@ -77,7 +77,7 @@ public class TestDb extends AndroidTestCase {
             fail("No values returned :(");
         }
 
-        ContentValues weatherValues = getWeatherContentValues(locationRowId);
+        ContentValues weatherValues = createWeatherValues(locationRowId);
 
 
         /**
@@ -102,7 +102,7 @@ public class TestDb extends AndroidTestCase {
         dbHelper.close();
     }
 
-    private ContentValues getWeatherContentValues(long locationRowId) {
+    public static ContentValues createWeatherValues(long locationRowId) {
         ContentValues weatherValues = new ContentValues();
         weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationRowId);
         weatherValues.put(WeatherEntry.COLUMN_DATETEXT, "20141205");
@@ -119,7 +119,7 @@ public class TestDb extends AndroidTestCase {
 
     public static final String TEST_CITY_NAME = "North Pole";
 
-    private ContentValues getLocationValues() {
+    public static ContentValues createNorthPoleLocationValues() {
         // Test data we're going to insert into the DB to see if it works.
         String testLocationSetting = "99705";
         double testLatitude = 64.7488;
@@ -151,7 +151,7 @@ public class TestDb extends AndroidTestCase {
         return true;
     }
 
-//    static final String TEST_LOCATION = "99705";
-//    static final String TEST_DATE = "20141205";
+    static final String TEST_LOCATION = "99705";
+    static final String TEST_DATE = "20141205";
 
 }
