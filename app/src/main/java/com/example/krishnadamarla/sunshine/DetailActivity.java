@@ -3,7 +3,11 @@ package com.example.krishnadamarla.sunshine;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,11 +18,30 @@ import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.Adapter;
 import android.widget.ShareActionProvider;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.example.krishnadamarla.sunshine.data.WeatherContract;
+import com.example.krishnadamarla.sunshine.helpers.Utility;
 
 
 public class DetailActivity extends Activity {
 
+
+    public static final int FORECAST_LOADER = 0;
+    public static final String[] FORECAST_COLUMNS = {
+        WeatherContract.WeatherEntry.COLUMN_DATETEXT,
+                WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
+                WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+                WeatherContract.WeatherEntry.COLUMN_MIN_TEMP};
+
+
+    public static final int COL_WEATHER_DATE = 0;
+    public static final int COL_WEATHER_DESC = 1;
+    public static final int COL_WEATHER_MIN_TEMP = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+
+    private String _StartDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +51,14 @@ public class DetailActivity extends Activity {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new DetailFragment())
                     .commit();
+        }
+
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT))
+        {
+
+            _StartDate =  intent.getStringExtra(Intent.EXTRA_TEXT);
         }
     }
 
@@ -59,7 +90,12 @@ public class DetailActivity extends Activity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+    public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            getLoaderManager().initLoader(FORECAST_LOADER, null,this);
+        }
 
         private ShareActionProvider mShareActionProvider;
         public DetailFragment() {
@@ -69,13 +105,9 @@ public class DetailActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-            Intent intent = getActivity().getIntent();
-            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT))
-            {
-                String forecast =  intent.getStringExtra(Intent.EXTRA_TEXT);
-                ((TextView)rootView.findViewById(R.id.detail_text)).setText(forecast);
-            }
+
             return rootView;
         }
 
@@ -97,6 +129,48 @@ public class DetailActivity extends Activity {
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT, forecast + "#sunshine");
             return intent;
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return new CursorLoader(getApplicationContext(),
+                    WeatherContract.WeatherEntry.buildWeatherLocationWithDate(Utility.getPreferredLocation(getApplicationContext()), _StartDate),
+                    FORECAST_COLUMNS, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if(data.moveToNext())
+            {
+                TextView dateTextView = (TextView) findViewById(R.id.detail_item_date_textview);
+                dateTextView.setText(data.getString(COL_WEATHER_DATE));
+
+                TextView descriptionTextView = (TextView) findViewById(R.id.detail_item_forecast_textview);
+                descriptionTextView.setText(data.getString(COL_WEATHER_DESC));
+
+                TextView minTempTextView = (TextView) findViewById(R.id.detail_item_low_textview);
+                minTempTextView.setText(data.getString(COL_WEATHER_MIN_TEMP));
+
+                TextView maxTempTextView = (TextView) findViewById(R.id.detail_item_high_textview);
+                maxTempTextView.setText(data.getString(COL_WEATHER_MAX_TEMP));
+            }
+
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+            TextView dateTextView = (TextView) findViewById(R.id.detail_item_date_textview);
+            dateTextView.setText("");
+
+            TextView descriptionTextView = (TextView) findViewById(R.id.detail_item_forecast_textview);
+            dateTextView.setText("");
+
+            TextView minTempTextView = (TextView) findViewById(R.id.detail_item_low_textview);
+            dateTextView.setText("");
+
+            TextView maxTempTextView = (TextView) findViewById(R.id.detail_item_high_textview);
+            dateTextView.setText("");
         }
     }
 }

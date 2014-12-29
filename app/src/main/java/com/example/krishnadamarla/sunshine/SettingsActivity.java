@@ -9,6 +9,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
+import com.example.krishnadamarla.sunshine.data.WeatherContract;
+
 /**
  * Created by krishnadamarla on 12/25/14.
  */
@@ -57,6 +59,17 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
+
+        if (preference.getKey().equals(getString(R.string.pref_general_temp_units_key)))
+        {
+            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getApplicationContext());
+            String location = value.toString();
+            fetchWeatherTask.execute(location);
+        }
+        else
+        {
+            getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+        }
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
