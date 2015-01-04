@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ import java.util.Date;
  */
  public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private SimpleCursorAdapter simpleCursorAdapter;
+    private ForecastAdapter forecastAdapter;
 
     private String _Location;
     public static final int FORECAST_LOADER = 0;
@@ -51,7 +52,8 @@ import java.util.Date;
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING
+            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
     };
 
     //these indices are tied to FORECAST_COLUMNS. If FORECAST_COLUMNS change these should change
@@ -61,6 +63,7 @@ import java.util.Date;
     public static final int COL_WEATHER_MIN_TEMP = 3;
     public static final int COL_WEATHER_MAX_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_ID_API = 6;
 
     public ForecastFragment() {
     }
@@ -97,43 +100,14 @@ import java.util.Date;
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item_forecast,null,
-                                                       new String[]{WeatherContract.WeatherEntry.COLUMN_DATETEXT,
-                                                               WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
-                                                               WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
-                                                               WeatherContract.WeatherEntry.COLUMN_MAX_TEMP},
-                                                        new int[]{ R.id.list_item_date_textview,
-                                                                    R.id.list_item_forecast_textview,
-                                                                    R.id.list_item_low_textview,
-                                                                    R.id.list_item_high_textview}, 0);
-        simpleCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                boolean isMetric = Utility.isMetric(getActivity());
-                switch (columnIndex) {
-                    case COL_WEATHER_MAX_TEMP:
-                    case COL_WEATHER_MIN_TEMP: {
-                        // we have to do some formatting and possibly a conversion
-                        ((TextView) view).setText(Utility.formatTemperature(
-                                cursor.getDouble(columnIndex), isMetric));
-                        return true;
-                    }
-                    case COL_WEATHER_DATE: {
-                        String dateString = cursor.getString(columnIndex);
-                        TextView dateView = (TextView) view;
-                        dateView.setText(Utility.formatDate(dateString));
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+        forecastAdapter = new ForecastAdapter(getActivity(),null, 0);
+
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        forecastListView.setAdapter(simpleCursorAdapter);
+        forecastListView.setAdapter(forecastAdapter);
         forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = ((SimpleCursorAdapter) parent.getAdapter()).getCursor();
+                Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
                 if (cursor != null && cursor.moveToPosition(position))
                 {
 //                    String currentItemForecast = String.format("%s - %s - %s/%s",
@@ -194,13 +168,13 @@ import java.util.Date;
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        simpleCursorAdapter.swapCursor(data);
+        forecastAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        simpleCursorAdapter.swapCursor(null);
+        forecastAdapter.swapCursor(null);
 
     }
 }

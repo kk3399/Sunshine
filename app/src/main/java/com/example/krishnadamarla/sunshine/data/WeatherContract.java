@@ -21,6 +21,8 @@ import android.provider.BaseColumns;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 /**
  * Defines table and column names for the weather database.

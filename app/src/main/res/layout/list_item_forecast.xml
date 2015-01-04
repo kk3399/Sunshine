@@ -1,52 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:gravity="center_vertical"
-    android:id="@+id/list_item_date_textview" android:text="Dec 27 2014">
-</TextView>
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:minHeight="?android:attr/listPreferredItemHeight">
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:text="-">
-</TextView>
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:id="@+id/list_item_icon"
+    android:layout_weight="0"
+    />
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="wrap_content" android:layout_height="wrap_content"
-android:minHeight="?android:attr/listPreferredItemHeight"
-android:gravity="center_vertical"
-android:id="@+id/list_item_forecast_textview" android:text="Sunny">
-</TextView>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_item_date_textview" android:text="Dec 27 2014"
+        >
+    </TextView>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:text="-">
-</TextView>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:id="@+id/list_item_forecast_textview" android:text="Sunny">
+    </TextView>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="wrap_content" android:layout_height="wrap_content"
-android:minHeight="?android:attr/listPreferredItemHeight"
-android:gravity="center_vertical"
-android:id="@+id/list_item_high_textview" android:text="80">
-</TextView>
+    </LinearLayout>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:text="/">
-</TextView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_item_high_textview" android:text="80">
+        </TextView>
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="wrap_content" android:layout_height="wrap_content"
-android:minHeight="?android:attr/listPreferredItemHeight"
-android:gravity="center_vertical"
-android:id="@+id/list_item_low_textview" android:text="60">
-</TextView>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_item_low_textview" android:text="60">
+        </TextView>
+
+    </LinearLayout>
+
 
 </LinearLayout>
