@@ -4,8 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp"
-    android:minHeight="?android:attr/listPreferredItemHeight">
-
+    android:paddingLeft="60dp"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/today_touch_selector">
 
 <LinearLayout
         android:layout_width="wrap_content"
@@ -18,20 +19,31 @@
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/list_item_date_textview" android:text="Dec 27 2014"
-            >
+            android:id="@+id/list_item_date_textview"
+            android:text="Dec 27 2014"
+            android:fontFamily="sans-serif-condensed"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/white">
         </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/list_item_high_textview" android:text="80">
+            android:id="@+id/list_item_high_textview"
+            android:text="80"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="72sp"
+            android:textColor="@color/white">
         </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/list_item_low_textview" android:text="60">
+            android:id="@+id/list_item_low_textview"
+            android:text="60"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="36sp"
+            android:textColor="@color/white">
         </TextView>
 
     </LinearLayout>
@@ -45,16 +57,19 @@
     android:gravity="center_horizontal">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/list_item_icon"
-        />
+        android:src="@drawable/art_clear"/>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/list_item_forecast_textview"
-        android:text="Sunny">
+        android:text="Sunny"
+        android:fontFamily="sans-serif-condensed"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/white">
     </TextView>
 
     </LinearLayout>

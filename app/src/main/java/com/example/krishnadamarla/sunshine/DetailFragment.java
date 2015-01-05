@@ -25,6 +25,7 @@ import com.example.krishnadamarla.sunshine.helpers.Utility;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int FORECAST_LOADER = 0;
+    public static final String DATE_ARGUMENT = "dateArgument";
 
     public static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.COLUMN_DATETEXT,
@@ -34,7 +35,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID};
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherContract.WeatherEntry.COLUMN_DEGREES};
 
 
     public static final int COL_WEATHER_DATE = 0;
@@ -45,13 +47,37 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_WEATHER_PRESSURE = 5;
     public static final int COL_WEATHER_WIND = 6;
     public static final int COL_WEATHER_ID_API = 7;
+    public static final int COL_WEATHER_DEGREES = 8;
 
     private String _StartDate = "";
+
+    public static DetailFragment newInstance(String date) {
+        DetailFragment f = new DetailFragment();
+
+        f._StartDate = date;
+        Bundle args = new Bundle();
+        args.putString(DATE_ARGUMENT, date);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(DATE_ARGUMENT)) {
+            getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(FORECAST_LOADER, null,this);
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(DATE_ARGUMENT)) {
+            getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        }
     }
 
     private ShareActionProvider mShareActionProvider;
@@ -75,31 +101,30 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // Locate MenuItem with ShareActionProvider
         MenuItem item = menu.findItem(R.id.action_share);
         // Fetch and store ShareActionProvider
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
-        mShareActionProvider.setShareIntent(getSharableIntent());
+        //mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        //mShareActionProvider.setShareIntent(getSharableIntent());
     }
 
     private Intent getSharableIntent() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        String forecast = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, forecast + "#sunshine");
-        return intent;
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(DATE_ARGUMENT)) {
+            String forecast = args.getString(DATE_ARGUMENT);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, forecast + "#sunshine");
+            return intent;
+        }
+        return null;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT))
-        {
-
-            _StartDate =  intent.getStringExtra(Intent.EXTRA_TEXT);
-        }
-
+        _StartDate =  getArguments().getString(DATE_ARGUMENT);
         return new CursorLoader(getActivity(),
-                WeatherContract.WeatherEntry.buildWeatherLocationWithDate(Utility.getPreferredLocation(getActivity()), _StartDate),
-                FORECAST_COLUMNS, null, null, null);
+            WeatherContract.WeatherEntry.buildWeatherLocationWithDate(Utility.getPreferredLocation(getActivity()), _StartDate),
+            FORECAST_COLUMNS, null, null, null);
+
     }
 
     @Override
@@ -126,14 +151,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             TextView maxTempTextView = (TextView) getActivity().findViewById(R.id.detail_item_high_textview);
             maxTempTextView.setText(Utility.formatTemperature(getActivity(), data.getFloat(COL_WEATHER_MAX_TEMP), isMetric));
 
+            float windSpeedStr = data.getFloat(COL_WEATHER_WIND);
+            float windDirStr = data.getFloat(COL_WEATHER_DEGREES);
+            TextView windTextView = (TextView) getActivity().findViewById(R.id.detail_item_wind_textview);
+            windTextView.setText(Utility.getFormattedWind(getActivity(), windSpeedStr, windDirStr));
+
+            float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
             TextView humidityTextView = (TextView) getActivity().findViewById(R.id.detail_item_humidity_textview);
-            humidityTextView.setText(data.getString(COL_WEATHER_HUMIDITY));
+            humidityTextView.setText(getActivity().getString(R.string.format_humidity, humidity));
 
             TextView pressureTextView = (TextView) getActivity().findViewById(R.id.detail_item_pressure_textview);
-            pressureTextView.setText(data.getString(COL_WEATHER_PRESSURE));
-
-            TextView windTextView = (TextView) getActivity().findViewById(R.id.detail_item_wind_textview);
-            windTextView.setText(data.getString(COL_WEATHER_WIND));
+            pressureTextView.setText(getActivity().getString(R.string.format_pressure, data.getFloat(COL_WEATHER_PRESSURE)));
         }
 
     }

@@ -45,6 +45,10 @@ import java.util.Date;
 
     private String _Location;
     public static final int FORECAST_LOADER = 0;
+    private int _Position = 0;
+    private ListView _ListView;
+    public static final String SELECTED_POSITION = "selectedPosition";
+    private boolean mUseTodayLayout = false;
 
     public static final String[] FORECAST_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
@@ -85,6 +89,13 @@ import java.util.Date;
         inflater.inflate(R.menu.forecastfragment, menu);
     }
 
+    public void setUseTodayLayout(boolean useTodayLayout)
+    {
+        mUseTodayLayout = useTodayLayout;
+        if (forecastAdapter != null)
+            forecastAdapter.setUseTodayLayout(useTodayLayout);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_refresh)
@@ -96,17 +107,29 @@ import java.util.Date;
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if(_Position != ListView.INVALID_POSITION)
+        {
+            outState.putInt(SELECTED_POSITION, _Position);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         forecastAdapter = new ForecastAdapter(getActivity(),null, 0);
+        forecastAdapter.setUseTodayLayout(mUseTodayLayout);
 
-        ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        forecastListView.setAdapter(forecastAdapter);
-        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        _ListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        _ListView.setAdapter(forecastAdapter);
+        _ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                _Position = position;
                 Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
                 if (cursor != null && cursor.moveToPosition(position))
                 {
@@ -117,12 +140,19 @@ import java.util.Date;
 //                            Utility.formatTemperature(cursor.getDouble(COL_WEATHER_MIN_TEMP),Utility.isMetric(getActivity())));
                     String currentItemForecast = cursor.getString(COL_WEATHER_DATE);
                     //Toast.makeText(getActivity(), currentItemForecast, Toast.LENGTH_LONG).show();
-                    Intent detailIntent = new Intent(getActivity(), DetailActivity.class);
-                    detailIntent.putExtra(Intent.EXTRA_TEXT, currentItemForecast);
-                    startActivity(detailIntent);
+
+
+                    ((Callback) getActivity()).onItemSelected(currentItemForecast);
+
+
                 }
             }
         });
+
+        if (savedInstanceState != null  && savedInstanceState.containsKey(SELECTED_POSITION))
+        {
+            _Position =  savedInstanceState.getInt(SELECTED_POSITION);
+        }
         return rootView;
     }
 
@@ -148,6 +178,8 @@ import java.util.Date;
     }
 
 
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -169,6 +201,10 @@ import java.util.Date;
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         forecastAdapter.swapCursor(data);
+        if (_Position != ListView.INVALID_POSITION)
+        {
+            _ListView.smoothScrollToPosition(_Position);
+        }
 
     }
 
@@ -176,6 +212,18 @@ import java.util.Date;
     public void onLoaderReset(Loader<Cursor> loader) {
         forecastAdapter.swapCursor(null);
 
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * Callback for when an item has been selected.
+         */
+        public void onItemSelected(String date);
     }
 }
 

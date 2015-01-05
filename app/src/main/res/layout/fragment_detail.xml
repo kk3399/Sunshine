@@ -19,14 +19,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TODAY"
-            android:id="@+id/detail_item_day_textview">
+            android:id="@+id/detail_item_day_textview"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-condensed">
         </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/detail_item_date_textview"
-            android:text="June 24">
+            android:text="June 24"
+            android:textSize="16sp"
+            android:textColor="@color/light_black"
+            android:fontFamily="sans-serif-condensed">
         </TextView>
 
         <LinearLayout
@@ -42,19 +47,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
-            >
+            android:gravity="right">
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/detail_item_high_textview"
-                android:text="80">
+                android:text="80"
+                android:textSize="96sp"
+                android:fontFamily="sans-serif-light">
             </TextView>
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/detail_item_low_textview"
-                android:text="60">
+                android:text="60"
+                android:textSize="48sp"
+                android:textColor="@color/light_black"
+                android:fontFamily="sans-serif-light">
             </TextView>
         </LinearLayout>
         <LinearLayout
@@ -65,15 +75,20 @@
             android:layout_weight="1"
             android:gravity="center_horizontal">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detail_item_art_imageview"/>
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/detail_item_art_imageview"
+                android:src="@drawable/art_clear"/>
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:gravity="center_vertical"
-                android:id="@+id/detail_item_forecast_textview" android:text="Sunny">
+                android:id="@+id/detail_item_forecast_textview"
+                android:text="Sunny"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@color/light_black"
+                android:fontFamily="sans-serif-condensed">
             </TextView>
         </LinearLayout>
 
@@ -86,21 +101,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HUMIDITY: "
-            android:id="@+id/detail_item_humidity_textview">
+            android:id="@+id/detail_item_humidity_textview"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:fontFamily="sans-serif-light">
         </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WIND:"
-            android:id="@+id/detail_item_wind_textview">
+            android:id="@+id/detail_item_wind_textview"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:fontFamily="sans-serif-light">
         </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PRESSURE:"
-            android:id="@+id/detail_item_pressure_textview">
+            android:id="@+id/detail_item_pressure_textview"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:fontFamily="sans-serif-light">
         </TextView>
 
     </LinearLayout>

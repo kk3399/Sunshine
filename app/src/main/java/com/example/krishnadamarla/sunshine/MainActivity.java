@@ -19,18 +19,44 @@ import android.widget.ShareActionProvider;
 import java.util.ArrayList;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ForecastFragment.Callback{
 
+    private boolean _isTwoPane = false;
+
+    @Override
+    public void onItemSelected(String date) {
+
+        if(_isTwoPane)
+        {
+            getFragmentManager().beginTransaction().replace(R.id.weather_detail_container, DetailFragment.newInstance(date)).commit();
+        }
+        else
+        {
+            Intent detailIntent = new Intent(getApplicationContext(), DetailActivity.class);
+            detailIntent.putExtra(Intent.EXTRA_TEXT, date);
+            startActivity(detailIntent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
-                    .commit();
+
+        if(findViewById(R.id.weather_detail_container) != null)
+        {
+            _isTwoPane=true;
+            if (savedInstanceState == null)
+                getFragmentManager().beginTransaction().add(R.id.weather_detail_container, new DetailFragment()).commit();
         }
+        else
+        {
+            _isTwoPane = false;
+        }
+
+        ForecastFragment fragment = ( (ForecastFragment)getFragmentManager().findFragmentById(R.id.fragment_forecast));
+        fragment.setUseTodayLayout(!_isTwoPane);
+
     }
 
 
