@@ -41,8 +41,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     public static final int COL_WEATHER_DATE = 0;
     public static final int COL_WEATHER_DESC = 1;
-    public static final int COL_WEATHER_MIN_TEMP = 2;
-    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MAX_TEMP = 2;
+    public static final int COL_WEATHER_MIN_TEMP = 3;
     public static final int COL_WEATHER_HUMIDITY = 4;
     public static final int COL_WEATHER_PRESSURE = 5;
     public static final int COL_WEATHER_WIND = 6;

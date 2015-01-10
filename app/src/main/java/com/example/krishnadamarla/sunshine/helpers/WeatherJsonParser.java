@@ -9,6 +9,7 @@ import android.util.Log;
 import com.example.krishnadamarla.sunshine.FetchWeatherTask;
 import com.example.krishnadamarla.sunshine.R;
 import com.example.krishnadamarla.sunshine.data.WeatherContract;
+import com.example.krishnadamarla.sunshine.service.SunshineService;
 
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.json.JSONArray;
@@ -166,7 +167,7 @@ public final class WeatherJsonParser {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
             int bulkInsertRowCount;
-            if ((bulkInsertRowCount = FetchWeatherTask.addWeather(context, contentValuesArray)) > 0)
+            if ((bulkInsertRowCount = SunshineService.addWeather(context, contentValuesArray)) > 0)
             {
                 Log.v(LOG_TAG, "Bulk insert row count: "+ bulkInsertRowCount);
             }

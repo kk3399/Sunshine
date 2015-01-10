@@ -37,6 +37,12 @@
         <provider
             android:authorities="com.example.krishnadamarla.sunshine"
             android:name=".data.WeatherProvider"/>
+        <service android:name=".service.SunshineService"
+            android:label="SunshineService"
+            android:icon="@mipmap/ic_launcher"
+            android:enabled="true"
+            ></service>
+        <receiver android:name=".service.SunshineService$AlarmReceiver"/>
     </application>
 
 </manifest>

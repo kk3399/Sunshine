@@ -1,7 +1,9 @@
 package com.example.krishnadamarla.sunshine;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.krishnadamarla.sunshine.data.WeatherContract;
 import com.example.krishnadamarla.sunshine.helpers.Utility;
+import com.example.krishnadamarla.sunshine.service.SunshineService;
 
 import org.json.JSONException;
 
@@ -174,7 +178,17 @@ import java.util.Date;
     {
         String location = Utility.getPreferredLocation(getActivity());
         Toast.makeText(getActivity(),location, Toast.LENGTH_SHORT).show();
-        new FetchWeatherTask(getActivity()).execute(location);
+        //new FetchWeatherTask(getActivity()).execute(location);
+        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
+        serviceIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
+        getActivity().startService(serviceIntent);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+        alarmIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 3000, pendingIntent);
     }
 
 
