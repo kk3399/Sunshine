@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 
+import com.example.krishnadamarla.sunshine.sync.SunshineSyncAdapter;
+
 import java.util.ArrayList;
 
 
@@ -56,6 +58,8 @@ public class MainActivity extends Activity implements ForecastFragment.Callback{
 
         ForecastFragment fragment = ( (ForecastFragment)getFragmentManager().findFragmentById(R.id.fragment_forecast));
         fragment.setUseTodayLayout(!_isTwoPane);
+
+        SunshineSyncAdapter.initializeSyncAdapter(this);
 
     }
 

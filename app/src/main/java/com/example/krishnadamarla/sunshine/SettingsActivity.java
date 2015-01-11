@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
 import com.example.krishnadamarla.sunshine.data.WeatherContract;
+import com.example.krishnadamarla.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * Created by krishnadamarla on 12/25/14.
@@ -70,9 +71,7 @@ public class SettingsActivity extends PreferenceActivity
 
         if (preference.getKey().equals(getString(R.string.pref_general_temp_units_key)))
         {
-            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getApplicationContext());
-            String location = value.toString();
-            fetchWeatherTask.execute(location);
+            SunshineSyncAdapter.syncImmediately(getApplicationContext());
         }
         else
         {

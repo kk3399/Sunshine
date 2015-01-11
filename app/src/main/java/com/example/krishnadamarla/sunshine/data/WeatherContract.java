@@ -18,6 +18,10 @@ package com.example.krishnadamarla.sunshine.data;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
+
+import com.example.krishnadamarla.sunshine.R;
+
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +41,7 @@ public class WeatherContract {
     4b - Adding ContentProvider to our Contract
     https://www.udacity.com/course/viewer#!/c-ud853/l-1576308909/m-1637521471 */
     public static final String CONTENT_AUTHORITY = "com.example.krishnadamarla.sunshine";
+    // App.con R.string.content_authority;
 
     // Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
     // the content provider.

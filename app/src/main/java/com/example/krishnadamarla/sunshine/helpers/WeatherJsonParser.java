@@ -2,24 +2,19 @@ package com.example.krishnadamarla.sunshine.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.krishnadamarla.sunshine.FetchWeatherTask;
 import com.example.krishnadamarla.sunshine.R;
 import com.example.krishnadamarla.sunshine.data.WeatherContract;
-import com.example.krishnadamarla.sunshine.service.SunshineService;
+import com.example.krishnadamarla.sunshine.sync.SunshineSyncAdapter;
 
-import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -117,7 +112,7 @@ public final class WeatherJsonParser {
         String description;
         int weatherId;
 
-        long locationID = FetchWeatherTask.addLocation(context, locationSetting, cityName, cityLatitude, cityLongitude);
+        long locationID = SunshineSyncAdapter.addLocation(context, locationSetting, cityName, cityLatitude, cityLongitude);
         Vector<ContentValues> contentValuesVector = new Vector<ContentValues>();
         for(int i = 0; i < weatherArray.length(); i++) {
 
@@ -167,7 +162,7 @@ public final class WeatherJsonParser {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
             int bulkInsertRowCount;
-            if ((bulkInsertRowCount = SunshineService.addWeather(context, contentValuesArray)) > 0)
+            if ((bulkInsertRowCount = SunshineSyncAdapter.addWeather(context, contentValuesArray)) > 0)
             {
                 Log.v(LOG_TAG, "Bulk insert row count: "+ bulkInsertRowCount);
             }

@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.example.krishnadamarla.sunshine.data.WeatherContract;
 import com.example.krishnadamarla.sunshine.helpers.Utility;
-import com.example.krishnadamarla.sunshine.service.SunshineService;
+import com.example.krishnadamarla.sunshine.sync.SunshineSyncAdapter;
 
 import org.json.JSONException;
 
@@ -179,16 +179,19 @@ import java.util.Date;
         String location = Utility.getPreferredLocation(getActivity());
         Toast.makeText(getActivity(),location, Toast.LENGTH_SHORT).show();
         //new FetchWeatherTask(getActivity()).execute(location);
-        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
-        serviceIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
-        getActivity().startService(serviceIntent);
 
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
-        alarmIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 3000, pendingIntent);
+//        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
+//        serviceIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
+//        getActivity().startService(serviceIntent);
+//
+//        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+//        alarmIntent.putExtra(SunshineService.LOCATION_STR_INPUT, location);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP,
+//                System.currentTimeMillis() + 3000, pendingIntent);
+
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
 
