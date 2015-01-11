@@ -176,8 +176,9 @@ import java.util.Date;
 
     private void updateWeather()
     {
-        String location = Utility.getPreferredLocation(getActivity());
-        Toast.makeText(getActivity(),location, Toast.LENGTH_SHORT).show();
+//        String location = Utility.getPreferredLocation(getActivity());
+//        Toast.makeText(getActivity(),location, Toast.LENGTH_SHORT).show();
+
         //new FetchWeatherTask(getActivity()).execute(location);
 
 //        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
@@ -191,7 +192,7 @@ import java.util.Date;
 //        alarmManager.set(AlarmManager.RTC_WAKEUP,
 //                System.currentTimeMillis() + 3000, pendingIntent);
 
-        SunshineSyncAdapter.syncImmediately(getActivity());
+        //SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
 

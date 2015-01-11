@@ -122,6 +122,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // we can enable inexact timers in our periodic sync
             Log.i(LOG_TAG, "old sync process used");
             SyncRequest request = new SyncRequest.Builder().
+                    setExtras(new Bundle()).
                     syncPeriodic(syncInterval, flexTime).
                     setSyncAdapter(account, authority).build();
             ContentResolver.requestSync(request);
