@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.krishnadamarla.sunshine.data.WeatherContract;
+
 /**
  * Created by krishnadamarla on 1/10/15.
  */

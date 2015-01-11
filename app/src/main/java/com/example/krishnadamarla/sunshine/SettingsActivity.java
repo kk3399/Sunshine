@@ -46,6 +46,7 @@ public class SettingsActivity extends PreferenceActivity
         // TODO: Add preferences
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_general_location_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_general_temp_units_key)));
+        bindPreferenceSummaryToBooleanValue(findPreference(getString(R.string.pref_general_notifications_key)));
     }
 
     /**
@@ -65,6 +66,18 @@ public class SettingsActivity extends PreferenceActivity
                         .getString(preference.getKey(), ""));
     }
 
+    private void bindPreferenceSummaryToBooleanValue(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(this);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+        onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getBoolean(preference.getKey(), Boolean.parseBoolean(getString(R.string.pref_general_notifications_default))));
+    }
+
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
@@ -77,6 +90,14 @@ public class SettingsActivity extends PreferenceActivity
         {
             getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
         }
+
+        if(preference.getKey().equals(getString(R.string.pref_general_notifications_key)) && !stringValue.equals(getString( R.string.pref_general_notifications_default)))
+        {
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+            editor.putLong(getString(R.string.pref_last_notification), 0);
+            editor.commit();
+        }
+
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in

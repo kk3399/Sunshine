@@ -11,7 +11,12 @@
     android:defaultValue="@string/pref_general_temp_units_metric"
     android:entries="@array/temp_units_array_entries"
     android:entryValues="@array/temp_units_array_values">
-
 </ListPreference>
+ <CheckBoxPreference android:title="@string/pref_general_notifications_title"
+     android:key="@string/pref_general_notifications_key"
+     android:summaryOff="@string/pref_general_notifications_false"
+     android:summaryOn="@string/pref_general_notifications_true"
+     android:defaultValue="@string/pref_general_notifications_default">
+ </CheckBoxPreference>
 
 </PreferenceScreen>

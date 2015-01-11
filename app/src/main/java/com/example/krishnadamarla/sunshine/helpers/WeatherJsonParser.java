@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 
@@ -168,6 +169,13 @@ public final class WeatherJsonParser {
             }
             else
                 Log.e(LOG_TAG, "Bulk insert failed");
+
+            Calendar cal = Calendar.getInstance(); //Get's a calendar object with the current time.
+            cal.add(Calendar.DATE, -1); //Signifies yesterday's date
+            String yesterdayDate = WeatherContract.getDbDateString(cal.getTime());
+            context.getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI,
+                    WeatherContract.WeatherEntry.COLUMN_DATETEXT + " <= ?",
+                    new String[] {yesterdayDate});
         }
     }
 
